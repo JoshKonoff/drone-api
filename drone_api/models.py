@@ -1,4 +1,4 @@
-from drone_api import app, db, login_manager
+from drone_api import app, db, login_manager, ma
 import uuid
 from datetime import datetime
 
@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), nullable = False)
     password = db.Column(db.String, nullable = True, default = '')
     g_auth_verify = db.Column(db.Boolean, default = False)
-    token = db.Column(db.String, default = '')
+    token = db.Column(db.String, default = '', unique = True)
     date_create = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     drone = db.relationship('Drone', backref = 'owner', lazy = True)
 
@@ -55,12 +55,13 @@ class Drone(db.Model):
     name = db.Column(db.String(150))
     price = db.Column(db.Integer)
     model = db.Column(db.String(150))
-    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable = False)
+    user_id = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
     def __init__(self,name,price,model,user_id):
         self.name = name
         self.price = price
-        self.model = modelself.user_id = user_id
+        self.model = model
+        self.user_id = user_id
 
     def __repr__(self):
         return f'The following Drone has been added: {self.name} which belongs to {self.user_id}'
@@ -73,3 +74,11 @@ class Drone(db.Model):
             'model': self.model
         }
 
+
+# Creation of API Schema via the Marshamallow Object
+class DroneSchema(ma.Schema):
+    class Meta:
+        fields = ['id', 'name', 'price', 'model']
+
+drone_schema = DroneSchema()
+drones_schema = DroneSchema(many = True)  #How do we want the data to be modeled - in Schema - SQL - jsonify

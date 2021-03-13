@@ -11,9 +11,9 @@ import secrets
 from flask_login import UserMixin 
 
 
-@login_manager.user_loader
+@login_manager.user_loader   #.user_loader comes with login_manager that we imported in __init__.py 
 def load_user(user_id):
-    return User.query.get(user_id)
+    return User.query.get(user_id)   #look for then get a user id. .query comes with python/SQL
 
 
 class User(db.Model, UserMixin):
@@ -28,6 +28,7 @@ class User(db.Model, UserMixin):
     drone = db.relationship('Drone', backref = 'owner', lazy = True)
 
     def __init__(self,email,first_name = '',last_name = '', id='', password ='', token = '', g_auth_verify = False):
+        #email is required. names, id, password are optional b/c they're blank strings
         self.id = self.set_id()
         self.first_name = first_name
         self.last_name = last_name

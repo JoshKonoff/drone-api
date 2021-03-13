@@ -6,4 +6,7 @@ class UserLoginForm(FlaskForm):
     #email, password, submit
     email = StringField('Email', validators = [DataRequired(),Email()]) #it has to be filled in, and has to be an email 
     password = PasswordField('Password', validators = [DataRequired()])
-    submit_button = SubmitField()
+    submit_button = SubmitField() #when they click submit that will submit the form
+
+
+#forms.py gives your form the structure - we want our form to have an email, password and submit

@@ -1,4 +1,4 @@
-from drone_api import app, db, oauth 
+from drone_api import app, db, oauth #oauth is the Google authorization that we're using
 from flask import render_template, request, redirect, url_for, flash, session, jsonify 
 
 #drone_api module imports 
@@ -22,14 +22,15 @@ def signup():
     form = UserLoginForm()
 
     try:
-        if request.method == 'POST' and form.validate_on_submit():
+        if request.method == 'POST' and form.validate_on_submit():  #request - is the user requesting to POST or GET
             email = form.email.data
             password = form.password.data
             print(email,password)
 
-            user = User(email, password=password) #why do we need to do password = password
+            user = User(email, password=password) #creating a user and this is their email and this is their password
+            #The password field is going to equal the password that you pass in in models.py otherwise flask doesn't know which of the optional parameters the password is referring to
 
-            db.session.add(user)
+            db.session.add(user)    #session - you're git add .     .session adds the user to the database session (local host) and then when you commit you add it to the actual database
             db.session.commit()
             
             return redirect(url_for('signin'))
@@ -96,8 +97,8 @@ def create_drone(current_user_token):
 
     drone = Drone(name,price,model, user_id = user_id)
 
-    db.session.add(drone)
-    db.session.commit()
+    db.session.add(drone) #add it to the session
+    db.session.commit()  #then commit
 
     response = drone_schema.dump(drone)
     return jsonify(response)
@@ -122,7 +123,7 @@ def get_drone(current_user_token, id):
     owner, current_user_token = verify_owner(current_user_token)
     drone = Drone.query.get(id)
     response = drone_schema.dump(drone) 
-    return jsonify(response)
+    return jsonify(response)   #jsonify makes it more readable for the user standard
     # .dump shape shifts in this case from SQL to json
 
 # Update Drone

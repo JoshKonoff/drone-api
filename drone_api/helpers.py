@@ -11,11 +11,11 @@ import json
 from datetime import datetime
 
 # Create a function to generate a Json Web token - a value that contains a coded Json payloads
-def get_jwt(current_user):
+def get_jwt(current_user):  #like a cookie. Who are you and when did you access it
     jwt_token = jwt.encode(
 
         {
-            'owner': current_user.token,
+            'owner': current_user.token,  #key of owners gives me the current users token as a value
             'access_time': json.dumps(datetime.utcnow(), indent= 4, sort_keys= 4, default= str)
         },
         app.config['SECRET_KEY'],
